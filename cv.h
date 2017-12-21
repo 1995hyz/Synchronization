@@ -3,10 +3,10 @@
 
 #define CV_MAXPROC 64
 struct cv{
-	struct spinlock *mutex;
-	pid_t pidArray[CV_MAXPROC];
-	int *totalProcess;
-} 	
+	struct spinlock *cvmutex;
+	int pidArray[CV_MAXPROC];
+	int totalProcess;
+}; 	
 
 void cv_init(struct cv *cv);
 void cv_wait(struct cv *cv, struct spinlock *mutex);
