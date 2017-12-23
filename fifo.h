@@ -7,6 +7,7 @@ struct fifo{
 	long buf[MYFIFO_BUFSIZ];
 	int write_index;
 	int read_index;
+	int long_count;
 	struct spinlock *fifo_mutex;
 	struct cv* full;
 	struct cv* empty;
