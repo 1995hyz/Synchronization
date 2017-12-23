@@ -1,5 +1,5 @@
 #ifndef CV_H
-#define CV_
+#define CV_H
 
 #define CV_MAXPROC 64
 struct cv{

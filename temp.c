@@ -11,6 +11,8 @@
 #include <sys/mman.h>
 #include <sys/wait.h>
 
+void handler();
+
 void handler(){
 	fprintf(stderr,"Wake Up, %d\n", getpid());
 }	
@@ -27,6 +29,7 @@ void main(){
 	char *fault2;
 	strcpy(fault,fault2);
 	fprintf(stdout,"Signal Got Blocked\n");*/
+	signal(SIGUSR1,handler);
 	char *addr;
 	char *addr2;
 	if(((void*)(addr=mmap(NULL, (size_t)(sizeof(char)*4096),PROT_READ|PROT_WRITE,MAP_SHARED|MAP_ANONYMOUS,-1,0)))<0){
@@ -48,28 +51,28 @@ void main(){
 				fprintf(stderr,"Fork Error: %s\n", strerror(errno));
 				exit(1);
 			case 0:
+				spin_lock(mutex);
 				fprintf(stderr,"Enter Process: %d\n",getpid());
 				cv_wait(test,mutex);
+				spin_unlock(mutex);
 				fprintf(stderr,"Exit Process: %d\n",getpid());
 				exit(0);
 			default:
-				;
+				fprintf(stderr,"Fork Process %d\n",pid);
 		}
 	}
-	/*int wstatus=0;
-	pid_t pid;
-	while((pid=wait(&wstatus))>0){
-		fprintf(stderr, "EXIT %d\n", (int) pid);
-		if(WIFSIGNALED(wstatus)){
-			fprintf(stderr,"Kill by Signal: %d\n", WTERMSIG(wstatus));
-		}
-	}*/	
-	printf("****\n");
-	for(int i=60000;i>0;i++){
-	;
-	}
-	signal(SIGUSR1,handler);
+	printf("^^^^^^\n");
+	getchar();
+	perror("");
 	cv_signal(test);
 	cv_signal(test);
 	cv_signal(test);
+	int wstatus=0;
+        pid_t pid;
+        while((pid=wait(&wstatus))>0){
+                fprintf(stderr, "EXIT %d\n", (int) pid);
+                if(WIFSIGNALED(wstatus)){
+                        fprintf(stderr,"Kill by Signal: %d\n", WTERMSIG(wstatus));
+                }
+        }
 }

@@ -41,13 +41,13 @@ void cv_wait(struct cv *cv, struct spinlock *mutex){
 int cv_broadcast(struct cv *cv){
 	spin_lock(cv->cvmutex);
 	for(cv->totalProcess;cv->totalProcess>=0;cv->totalProcess--){
-		kill((pid_t)cv->pidArray[cv->totalProcess-1],10);
+		kill((pid_t)cv->pidArray[cv->totalProcess-1],SIGUSR1);
 	}
 	spin_unlock(cv->cvmutex);
 }
 int cv_signal(struct cv *cv){
 	spin_lock(cv->cvmutex);
 	cv->totalProcess--;
-	kill((pid_t)cv->pidArray[cv->totalProcess],10);
+	kill((pid_t)cv->pidArray[cv->totalProcess],SIGUSR1);
 	spin_unlock(cv->cvmutex);
 }
