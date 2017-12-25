@@ -3,14 +3,17 @@
 
 #define MYFIFO_BUFSIZ 1024
 
+#include <cv.h>
+#include <spinlock.h>
+
 struct fifo{
-	long buf[MYFIFO_BUFSIZ];
+	unsigned long buf[MYFIFO_BUFSIZ];
 	int write_index;
 	int read_index;
 	int long_count;
-	struct spinlock *fifo_mutex;
-	struct cv* full;
-	struct cv* empty;
+	struct spinlock fifo_mutex;
+	struct cv full;
+	struct cv empty;
 };
 
 void fifo_init(struct fifo *f);
